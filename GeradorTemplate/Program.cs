@@ -1,44 +1,52 @@
-﻿namespace GeradorTemplate
+﻿using GeradorTemplate.Facade;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+
+namespace GeradorTemplate
 {
-    class Program
+    public class Program
     {
+        public const string WEB_SERVICE = "-ws";
+        public const string MICRO_SERVICE = "-ms";
+
         static void Main(string[] args)
         {
-            var path = @"C:\Template\Fontes";
+            var tipoProjeto = args[0];
+            var nomeProjeto = args[1];
 
-            var directories = Directory.GetDirectories(path, "*.*", SearchOption.AllDirectories);
-
-            directories = directories.Select(x => x.Replace("WSGEM", args[0])).ToArray();
-
-            foreach (var item in directories)
+            if (args[0] == "-h" || args[0] == "-help")
             {
-                var newPath = item.Replace(@"Fontes\", @"Testando\");
-
-                Directory.CreateDirectory(newPath);
-
+                Console.WriteLine(" Comandos:");
+                Console.WriteLine("     [tipo projeto] [nome projeto]");
+                Console.WriteLine("         [tipo projeto] => -ws | cria um template usado para web services");
+                Console.WriteLine("         [tipo projeto] => -ms | cria um template usado para micro serviço");
+                Console.WriteLine("         [nome projeto] => NOME | cria um template com o nome Energisa.NOME, o NOME é de sua sujestão.");
+                Console.WriteLine(" OBS: O projeto será criado onde se localiza seu workspace no tfs, ajuste no appsettings.json antes de usar a aplicação.", ConsoleColor.Yellow);
             }
-
-
-            var ponto = ".".ToCharArray();
-
-
-
-            var filesChanged = from files in Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
-                               where files.Split(ponto[0]).Last() != "suo"
-                               select new
-                               {
-                                   File = files,
-                               };
-
-
-            foreach (var item in filesChanged)
+            else
             {
-                var newPath = item.File.Replace(@"Fontes\", @"Testando\").Replace("WSGEM", args[0]);
+                if (string.IsNullOrEmpty(tipoProjeto))
+                {
+                    Console.WriteLine("Tipo do projeto é inválido.");
+                    Console.WriteLine($"     Projetos válidos => {WEB_SERVICE}, {MICRO_SERVICE}");
+                }
+                else if (string.IsNullOrEmpty(nomeProjeto))
+                {
+                    Console.WriteLine("Nome do projeto é inválido.");
+                    Console.WriteLine("     Nome válido => NOME");
+                }
+                else
+                {
+                    // Carrega dependencias.
+                    IServiceProvider serviceProvider = Dependencias.LoadDependencies();
 
-                File.Copy(item.File, newPath, true);
+                    var facade = serviceProvider.GetRequiredService<ICreateTemplateFacade>();
 
-                File.WriteAllText(newPath, File.ReadAllText(newPath).Replace("WSGEM", args[0]));
-
+                    if (facade.Execute(tipoProjeto, nomeProjeto).GetAwaiter().GetResult())
+                        Console.WriteLine(" Projeto criado com sucesso.", ConsoleColor.Green);
+                    else
+                        Console.WriteLine(" Falha ao cria o projeto.", ConsoleColor.Red);
+                }
             }
         }
     }

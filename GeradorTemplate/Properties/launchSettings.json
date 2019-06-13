@@ -2,7 +2,7 @@
   "profiles": {
     "GeradorTemplate": {
       "commandName": "Project",
-      "commandLineArgs": "NomeTeste"
+      "commandLineArgs": "-ws TESTE"
     }
   }
 }

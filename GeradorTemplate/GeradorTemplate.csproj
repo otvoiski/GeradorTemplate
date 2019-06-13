@@ -14,11 +14,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="_Config\appsettings.json" />
+    <Content Include="_Config\appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Service\" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
   </ItemGroup>
 
 </Project>
