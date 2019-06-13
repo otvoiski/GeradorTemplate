@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GeradorTemplate": {
+      "commandName": "Project",
+      "commandLineArgs": "NomeTeste"
+    }
+  }
+}
