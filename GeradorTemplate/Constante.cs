@@ -2,7 +2,7 @@
 {
     public interface IConstante
     {
-        string GetPathOutput();
+        string GetPathOutput(string tipoProjeto);
         string GetPathTemplate();
         string GetNameTemplate();
     }
@@ -16,12 +16,15 @@
 
         public string GetPathTemplate()
         {
-            return @"C:\Template\Fontes";
+            return @"C:\TESTE\Template\Fontes";
         }
 
-        public string GetPathOutput()
+        public string GetPathOutput(string tipoProjeto)
         {
-            return @"Testando\";
+            if (tipoProjeto == Program.MICRO_SERVICE)
+                return @"Testando\";
+            else
+                return @"Testando\";
         }
     }
 }
