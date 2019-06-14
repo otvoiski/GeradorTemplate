@@ -31,33 +31,46 @@ namespace GeradorTemplate.Facade
             {
                 foreach (var item in DirectoryService.GetDirectories(nomeProjeto))
                 {
-                    var newPath = item.Replace(@"Fontes\", Constante.GetPathOutput(tipoProjeto));
+                    var newPath = item.Replace(Constante.GetIdentifier(), Constante.GetPathOutput());
                     DirectoryService.CreateDirectory(newPath);
                 }
-
-                var ponto = ".".ToCharArray();
-
-                var filesChanged =
-                    from files in DirectoryService.EnumerateFiles()
-                    where files.Split(ponto[0]).Last() != "suo"
-                    select new
-                    {
-                        File = files,
-                    };
-
-                foreach (var item in filesChanged)
+                
+                foreach (var item in from files in DirectoryService.EnumerateFiles()
+                                     where files.Split('.').Last() != "suo"
+                                     select new { File = files }
+                )
                 {
-                    var newPath = item.File.Replace(@"Fontes\", Constante.GetPathOutput(tipoProjeto)).Replace(Constante.GetNameTemplate(), nomeProjeto);
+                    var newPath = item.File.Replace(
+                        Constante.GetIdentifier(),
+                        Constante.GetPathOutput()
+                    ).Replace(
+                        Constante.GetNameTemplate(),
+                        nomeProjeto
+                    );
+
                     File.Copy(item.File, newPath, false);
-                    await File.WriteAllTextAsync(newPath, File.ReadAllText(newPath).Replace(Constante.GetNameTemplate(), nomeProjeto));
+                    await File.WriteAllTextAsync(
+                        newPath, 
+                        File.ReadAllText(newPath)
+                        .Replace(
+                            Constante.GetNameTemplate(),
+                            nomeProjeto
+                        )
+                    );
                 }
 
-                Process.Start("cmd.exe", $"Config/open.bat {Constante.GetPathOutput(tipoProjeto)}");
+                DirectoryService.MoveDirectory(tipoProjeto,nomeProjeto);
+
+                Process.Start(
+                    $"_Config/open.bat",
+                    $"{Constante.GetFullPath(tipoProjeto, nomeProjeto)}\\{Constante.GetIdentifier()}"
+                );
+
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Gerado Error: {ex.Message}, InnerException: {ex.InnerException.Message}");
+                Console.WriteLine($"Gerado Error: {ex.Message}", ConsoleColor.Red);
                 return false;
             }
         }

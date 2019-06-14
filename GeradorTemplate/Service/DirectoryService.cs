@@ -9,6 +9,7 @@ namespace GeradorTemplate.Service
         string[] GetDirectories(string nomeProjeto);
         void CreateDirectory(string newPath);
         IEnumerable<string> EnumerateFiles();
+        void MoveDirectory(string tipoProjeto, string nomeProjeto);
     }
 
     public class DirectoryService : IDirectoryService
@@ -36,7 +37,16 @@ namespace GeradorTemplate.Service
 
         public IEnumerable<string> EnumerateFiles()
         {
-            return Directory.EnumerateFiles(Constante.GetPathTemplate(), "*.*", SearchOption.AllDirectories);
+            return Directory.EnumerateFiles($"{Constante.GetPathTemplate()}{Constante.GetIdentifier()}", "*.*", SearchOption.AllDirectories);
+        }
+
+        public void MoveDirectory(string tipoProjeto, string nomeProjeto)
+        {
+            CreateDirectory(Constante.GetFullPath(tipoProjeto, nomeProjeto));
+            Directory.Move(
+                $"{Constante.GetPathTemplate()}{Constante.GetPathOutput()}",
+                $"{Constante.GetFullPath(tipoProjeto, nomeProjeto)}\\{Constante.GetIdentifier()}"
+            );
         }
     }
 }

@@ -10,7 +10,7 @@ namespace GeradorTemplate
         internal static IServiceProvider LoadDependencies()
         {
             var serviceCollection = new ServiceCollection()
-                .AddTransient<IConstante, Constante>()
+                .AddSingleton<IConstante, Constante>()
                 .AddTransient<IDirectoryService, DirectoryService>()
                 .AddTransient<ICreateTemplateFacade, CreateTemplateFacade>()
                 ;

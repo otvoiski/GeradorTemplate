@@ -20,7 +20,7 @@ namespace GeradorTemplate
                 Console.WriteLine("     [tipo projeto] [nome projeto]");
                 Console.WriteLine("         [tipo projeto] => -ws | cria um template usado para web services");
                 Console.WriteLine("         [tipo projeto] => -ms | cria um template usado para micro serviço");
-                Console.WriteLine("         [nome projeto] => NOME | cria um template com o nome Energisa.NOME, o NOME é de sua sujestão.");
+                Console.WriteLine("         [nome projeto] => NOME | cria um template com o nome NOME no namespace, o NOME é de sua sujestão.");
                 Console.WriteLine(" OBS: O projeto será criado onde se localiza seu workspace no tfs, ajuste no appsettings.json antes de usar a aplicação.", ConsoleColor.Yellow);
             }
             else
